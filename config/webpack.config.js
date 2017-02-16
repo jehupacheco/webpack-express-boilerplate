@@ -1,17 +1,15 @@
-'use strict';
-
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import paths from './paths';
 
 module.exports = {
   devtool: 'eval-source-map',
   entry: [
     'webpack-hot-middleware/client?reload=true',
-    path.join(__dirname, 'app/main.js')
+    paths.appMainJs
   ],
   output: {
-    path: path.join(__dirname, '/dist/'),
+    path: paths.dist,
     filename: '[name].js',
     publicPath: '/'
   },
@@ -33,9 +31,6 @@ module.exports = {
       test: /\.jsx?$/,
       exclude: /node_modules/,
       loader: 'babel',
-      query: {
-        "presets": ["react", "es2015", "stage-0", "react-hmre"]
-      }
     }, {
       test: /\.json?$/,
       loader: 'json'
@@ -43,5 +38,11 @@ module.exports = {
       test: /\.css$/,
       loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]'
     }]
-  }
+  },
+  resolve: {
+    alias: {
+      components: paths.appComponents,
+      reducers: paths.appReducers,
+    },
+  },
 };
