@@ -15,7 +15,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'app/index.tpl.html',
+      template: paths.appHtml,
       inject: 'body',
       filename: 'index.html'
     }),
@@ -33,10 +33,13 @@ module.exports = {
       loader: 'babel',
     }, {
       test: /\.json?$/,
-      loader: 'json'
+      loader: 'json',
     }, {
       test: /\.css$/,
-      loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]'
+      loader: 'style!css?modules&localIdentName=[name]---[local]---[hash:base64:5]',
+    }, {
+      test: /\.hbs$/,
+      loader: 'handlebars',
     }]
   },
   resolve: {
@@ -44,5 +47,6 @@ module.exports = {
       components: paths.appComponents,
       reducers: paths.appReducers,
     },
+    extensions: ['.js', '.json', '.jsx', ''],
   },
 };

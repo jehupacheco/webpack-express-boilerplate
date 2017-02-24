@@ -7,7 +7,8 @@ function resolveApp(relativePath) {
 }
 
 module.exports = {
-  appHtml: resolveApp('app/index.tpl.html'),
+  appHtml: resolveApp('app/views/index.hbs'),
+  appViews: resolveApp('app/views'),
   appMainJs: resolveApp('app/main.js'),
   appPackageJson: resolveApp('package.json'),
   appSrc: resolveApp('app'),

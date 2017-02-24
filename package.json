@@ -28,8 +28,11 @@
   "dependencies": {
     "babel-cli": "^6.4.0",
     "babel-core": "^6.22.1",
+    "consolidate": "^0.14.5",
+    "handlebars": "^4.0.6",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
+    "react-redux": "^5.0.2",
     "redux": "^3.6.0"
   },
   "devDependencies": {
@@ -50,6 +53,7 @@
     "eslint-plugin-react": "^3.4.2",
     "express": "^4.13.3",
     "extract-text-webpack-plugin": "^0.8.2",
+    "handlebars-loader": "^1.4.0",
     "html-webpack-plugin": "^1.6.1",
     "jscs": "^2.1.1",
     "jsdom": "^6.5.1",
