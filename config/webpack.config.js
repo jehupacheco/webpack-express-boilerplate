@@ -17,7 +17,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: paths.appHtml,
       inject: 'body',
-      filename: 'index.html'
+      filename: 'webpack.hbs'
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
@@ -28,7 +28,7 @@ module.exports = {
   ],
   module: {
     loaders: [{
-      test: /\.jsx?$/,
+      test: /\.(js|jsx)$/,
       exclude: /node_modules/,
       loader: 'babel',
     }, {

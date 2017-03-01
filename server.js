@@ -1,20 +1,36 @@
 /* eslint no-console: 0 */
-import path from 'path';
+import fs from 'fs';
 import express from 'express';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import config from './config/webpack.config.js';
+import hbs from 'handlebars';
+import React from 'react';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { renderToString } from 'react-dom/server';
 import paths from './config/paths';
-import engines from 'consolidate';
+import counter from 'reducers';
+import App from 'components/App';
 
-const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = isDeveloping ? 3000 : process.env.PORT;
+require('dotenv').config();
+
+const isDeveloping = process.env.NODE_ENV === 'development';
+const port = process.env.PORT;
 const app = express();
 
-app.set('views', paths.appViews);
-app.engine('hbs', engines.handlebars);
-app.set('view engine', 'hbs');
+const getDataForClient = () => {
+  const store = createStore(counter);
+  return {
+    preloadedState: store.getState(),
+    html: renderToString(
+      <Provider store={store}>
+        <App/>
+      </Provider>
+    ),
+  };
+};
 
 if (isDeveloping) {
   const compiler = webpack(config);
@@ -33,21 +49,18 @@ if (isDeveloping) {
 
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
-  // console.log('Holi');
-  app.use('*', function response(req, res, next) {
-    // console.log('Holi 2');
-    res.render('index', {title: 'Chifa'}, (err, html) => {
-      // console.log(html);
-      res.write(html);
-      res.send();
-      next();
-    });
-    res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+  app.use('*', function response(req, res) {
+    const source = middleware.fileSystem.readFileSync(`${paths.dist}/webpack.hbs`).toString();
+    res.write(hbs.compile(source)(getDataForClient()));
+    res.end();
   });
 } else {
-  app.use(express.static(__dirname + '/dist'));
-  app.get('*', function response(req, res) {
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
+  app.use(express.static(paths.dist));
+  app.use('*', function response(req, res) {
+    const source = fs.readFileSync(`${paths.dist}/webpack.hbs`).toString();
+    console.log(source);
+    res.write(hbs.compile(source)(getDataForClient()));
+    res.end();
   });
 }
 

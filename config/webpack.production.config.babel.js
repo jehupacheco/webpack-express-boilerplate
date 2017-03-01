@@ -1,26 +1,26 @@
-'use strict';
-
-var path = require('path');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var StatsPlugin = require('stats-webpack-plugin');
+import webpack from 'webpack';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import StatsPlugin from 'stats-webpack-plugin';
+import paths from './paths';
 
 module.exports = {
-  entry: [
-    path.join(__dirname, 'app/main.js')
-  ],
+  entry: {
+    main: paths.appMainJs,
+    server: paths.appServer,
+  },
+  target: 'node',
   output: {
-    path: path.join(__dirname, '/dist/'),
+    path: paths.dist,
     filename: '[name]-[hash].min.js',
     publicPath: '/'
   },
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new HtmlWebpackPlugin({
-      template: 'app/index.tpl.html',
+      template: paths.appHtml,
       inject: 'body',
-      filename: 'index.html'
+      filename: 'webpack.hbs'
     }),
     new ExtractTextPlugin('[name]-[hash].min.css'),
     new webpack.optimize.UglifyJsPlugin({
@@ -39,21 +39,35 @@ module.exports = {
   ],
   module: {
     loaders: [{
-      test: /\.jsx?$/,
+      test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      loader: 'babel',
-      query: {
-        "presets": ["es2015", "stage-0", "react"]
-      }
+      loader: 'babel'
     }, {
       test: /\.json?$/,
       loader: 'json'
     }, {
       test: /\.css$/,
       loader: ExtractTextPlugin.extract('style', 'css?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss')
+    }, {
+      test: /\.hbs$/,
+      loader: 'handlebars',
     }]
+  },
+  resolve: {
+    modulesDirectories: [paths.appNodeModules],
+    alias: {
+      components: paths.appComponents,
+      reducers: paths.appReducers,
+      handlebars: 'handlebars/runtime.js'
+    },
+    resolveLoader: {
+      alias: {
+        hbs: 'handlebars-loader',
+      },
+    },
+    extensions: ['.js', '.json', '.jsx', ''],
   },
   postcss: [
     require('autoprefixer')
-  ]
+  ],
 };
