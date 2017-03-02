@@ -2,9 +2,7 @@ version: '2'
 services:
   web:
     build: .
-    command: npm start
-    env_file:
-      - .env
+    command: ${COMPOSE_START_COMMAND}
     volumes:
       - .:/home/node/app
     ports:

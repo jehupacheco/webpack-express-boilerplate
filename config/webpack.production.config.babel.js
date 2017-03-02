@@ -4,6 +4,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import StatsPlugin from 'stats-webpack-plugin';
 import paths from './paths';
 
+require('dotenv').config();
+
 module.exports = {
   entry: {
     main: paths.appMainJs,
@@ -58,7 +60,6 @@ module.exports = {
     alias: {
       components: paths.appComponents,
       reducers: paths.appReducers,
-      handlebars: 'handlebars/runtime.js'
     },
     resolveLoader: {
       alias: {

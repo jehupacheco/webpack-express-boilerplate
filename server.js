@@ -16,6 +16,9 @@ import App from 'components/App';
 
 require('dotenv').config();
 
+console.log(process.env.NODE_ENV);
+console.log(process.env.PORT);
+
 const isDeveloping = process.env.NODE_ENV === 'development';
 const port = process.env.PORT;
 const app = express();
@@ -56,15 +59,24 @@ if (isDeveloping) {
   });
 } else {
   app.use(express.static(paths.dist));
-  app.use('*', function response(req, res) {
+
+  // app.use((err, req, res) => {
+  //   console.error(err);
+  //   res.status(500).send();
+  // });
+
+  app.use('*', (req, res) => {
     const source = fs.readFileSync(`${paths.dist}/webpack.hbs`).toString();
-    console.log(source);
     res.write(hbs.compile(source)(getDataForClient()));
     res.end();
   });
+
+  // app.get('/', (req, res) => {
+  //   res.send('Hello World!');
+  // });
 }
 
-app.listen(port, '0.0.0.0', function onStart(err) {
+app.listen(port, '0.0.0.0', err => {
   if (err) {
     console.log(err);
   }
